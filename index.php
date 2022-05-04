@@ -4,29 +4,19 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use App\DotEnv\DotEnv;
+
 //Load Composer's autoloader
 require 'vendor/autoload.php';
 (new DotEnv(__DIR__ . '/.env'))->load();
-
-// echo getenv('SMTP_USERNAME');
-// echo getenv('SMTP_PASSWORD');
-// echo getenv('SMTP_PORT');
-// echo getenv('SMTP_HOST');
-// echo getenv('SMTP_NAME');
-// echo getenv('SMTP_AUTH');
-
-
 
 if (isset($_POST['list_email'])) {
     $data_email = explode("\n",$_POST['list_email']);
     foreach($data_email as $each){
     $mail = new PHPMailer(true);
     try {
-        //Server settings
-    // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+
+    //Server settings
     $mail->isSMTP();                                            //Send using SMTP
-    // $mail->Host       = getenv('SMTP_HOST');                     //Set the SMTP server to send through
-    // $mail->Host = gethostbyname('smtp.gmail.com');
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
     $mail->Username   = getenv('SMTP_USERNAME');                     //SMTP username
@@ -37,9 +27,7 @@ if (isset($_POST['list_email'])) {
     //Recipients
     $mail->setFrom(getenv('SMTP_USERNAME'), getenv('SMTP_NAME'));
     
-    
     $mail->addAddress(trim($each));               //Name is optional
-    
 
     $mail->SMTPOptions = array(
         'ssl' => array(
@@ -49,7 +37,7 @@ if (isset($_POST['list_email'])) {
         )
     );
 
-        //Attachments
+    //Attachments
     $raw_file = glob(__DIR__.'/file/*');
     $gitignore = glob(__DIR__.'/file/*.gitignore');
     $file = array_diff($raw_file, $gitignore);
